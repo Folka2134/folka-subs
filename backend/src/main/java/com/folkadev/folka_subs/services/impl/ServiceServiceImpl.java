@@ -3,9 +3,12 @@ package com.folkadev.folka_subs.services.impl;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
 import com.folkadev.folka_subs.services.ServiceService;
 
+@Service
 public class ServiceServiceImpl implements ServiceService {
   @Override
   public List<ServiceDto> getServices() {
