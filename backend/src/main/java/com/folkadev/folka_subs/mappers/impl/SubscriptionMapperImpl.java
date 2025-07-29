@@ -1,9 +1,12 @@
 package com.folkadev.folka_subs.mappers.impl;
 
+import org.springframework.stereotype.Component;
+
 import com.folkadev.folka_subs.domain.dto.SubscriptionDto;
 import com.folkadev.folka_subs.domain.entities.Subscription;
 import com.folkadev.folka_subs.mappers.SubscriptionMapper;
 
+@Component
 public class SubscriptionMapperImpl implements SubscriptionMapper {
   @Override
   public Subscription fromDto(SubscriptionDto subscriptionDto) {
