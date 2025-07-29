@@ -30,11 +30,8 @@ public class Subscription {
   @JoinColumn(name = "service_id", nullable = false)
   private UUID serviceId;
 
-  @Column(name = "name", nullable = false)
-  private String name;
-
-  @Column(name = "display_name", nullable = false)
-  private String displayName;
+  @Column(name = "price")
+  private int price;
 
   @Column(name = "currency", nullable = false)
   private String currency;
@@ -71,12 +68,11 @@ public class Subscription {
   public Subscription() {
   }
 
-  public Subscription(UUID service_id, String name, String displayName, String currency, int trialPeriodDays,
+  public Subscription(UUID service_id, int price, String currency, int trialPeriodDays,
       BillingCycle billingCycle, List<Integer> notificationDaysBefore, Status status,
       String notes, LocalDateTime startDate, LocalDateTime cancelledDate) {
     this.serviceId = service_id;
-    this.name = name;
-    this.displayName = displayName;
+    this.price = price;
     this.currency = currency;
     this.trialPeriodDays = trialPeriodDays;
     this.billingCycle = billingCycle;
@@ -100,20 +96,12 @@ public class Subscription {
     this.serviceId = serviceId;
   }
 
-  public String getName() {
-    return name;
+  public int getPrice() {
+    return price;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setPrice(int price) {
+    this.price = price;
   }
 
   public String getCurrency() {
@@ -188,7 +176,6 @@ public class Subscription {
     return updatedAt;
   }
 
-  // Override equals, hashCode and toString methods
   @Override
   public boolean equals(Object o) {
     if (this == o)
@@ -198,8 +185,7 @@ public class Subscription {
     Subscription that = (Subscription) o;
     return Objects.equals(id, that.id) &&
         Objects.equals(serviceId, that.serviceId) &&
-        Objects.equals(name, that.name) &&
-        Objects.equals(displayName, that.displayName) &&
+        Objects.equals(price, that.price) &&
         Objects.equals(currency, that.currency) &&
         trialPeriodDays == that.trialPeriodDays &&
         billingCycle == that.billingCycle &&
@@ -212,7 +198,7 @@ public class Subscription {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, serviceId, name, displayName, currency, trialPeriodDays, billingCycle,
+    return Objects.hash(id, serviceId, price, currency, trialPeriodDays, billingCycle,
         notificationDaysBefore, status, notes, startDate, cancelledDate);
   }
 
@@ -221,8 +207,7 @@ public class Subscription {
     return "Subscription{" +
         "id=" + id +
         ", serviceId=" + serviceId +
-        ", name='" + name + '\'' +
-        ", displayName='" + displayName + '\'' +
+        ", price='" + price + '\'' +
         ", currency='" + currency + '\'' +
         ", trialPeriodDays=" + trialPeriodDays +
         ", billingCycle=" + billingCycle +
