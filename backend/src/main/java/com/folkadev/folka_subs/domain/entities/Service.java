@@ -1,16 +1,20 @@
 package com.folkadev.folka_subs.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +31,9 @@ public class Service {
 
   @Column(name = "display_name", nullable = false)
   private String displayName;
+
+  @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Subscription> subscriptions;
 
   @CreationTimestamp
   @Column(name = "created_at")
@@ -68,6 +75,14 @@ public class Service {
     this.displayName = displayName;
   }
 
+  public List<Subscription> getSubscriptions() {
+    return subscriptions;
+  }
+
+  public void setSubscriptions(List<Subscription> subscriptions) {
+    this.subscriptions = subscriptions;
+  }
+
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
@@ -93,22 +108,20 @@ public class Service {
     Service that = (Service) o;
     return Objects.equals(id, that.id) &&
         Objects.equals(name, that.name) &&
-        Objects.equals(displayName, that.displayName) &&
-        Objects.equals(createdAt, that.createdAt) &&
-        Objects.equals(updatedAt, that.updatedAt);
+        Objects.equals(displayName, that.displayName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, displayName, createdAt, updatedAt);
+    return Objects.hash(id, name, displayName);
   }
 
   @Override
   public String toString() {
     return "Service{" +
         "id=" + id +
-        ", name='" + name + '\'' +
-        ", displayName='" + displayName + '\'' +
+        ", name='" + name + "'" +
+        ", displayName='" + displayName + "'" +
         ", createdAt=" + createdAt +
         ", updatedAt=" + updatedAt +
         '}';
