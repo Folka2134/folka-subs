@@ -2,7 +2,7 @@ package com.folkadev.folka_subs.repositories;
 
 import java.util.UUID;
 
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties.Consumer.Subscription;
+import com.folkadev.folka_subs.domain.entities.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
