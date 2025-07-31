@@ -26,9 +26,9 @@ public class Subscription {
   @Column(name = "id", nullable = false, updatable = false)
   private UUID id;
 
-  @ManyToOne()
+  @ManyToOne
   @JoinColumn(name = "service_id", nullable = false)
-  private UUID serviceId;
+  private Service service;
 
   @Column(name = "price")
   private int price;
@@ -68,10 +68,10 @@ public class Subscription {
   public Subscription() {
   }
 
-  public Subscription(UUID service_id, int price, String currency, int trialPeriodDays,
+  public Subscription(Service service, int price, String currency, int trialPeriodDays,
       BillingCycle billingCycle, List<Integer> notificationDaysBefore, Status status,
       String notes, LocalDateTime startDate, LocalDateTime cancelledDate) {
-    this.serviceId = service_id;
+    this.service = service;
     this.price = price;
     this.currency = currency;
     this.trialPeriodDays = trialPeriodDays;
@@ -88,12 +88,12 @@ public class Subscription {
     return id;
   }
 
-  public UUID getServiceId() {
-    return serviceId;
+  public Service getService() {
+    return service;
   }
 
-  public void setServiceId(UUID serviceId) {
-    this.serviceId = serviceId;
+  public void setService(Service service) {
+    this.service = service;
   }
 
   public int getPrice() {
@@ -184,7 +184,7 @@ public class Subscription {
       return false;
     Subscription that = (Subscription) o;
     return Objects.equals(id, that.id) &&
-        Objects.equals(serviceId, that.serviceId) &&
+        Objects.equals(service, that.service) &&
         Objects.equals(price, that.price) &&
         Objects.equals(currency, that.currency) &&
         trialPeriodDays == that.trialPeriodDays &&
@@ -198,7 +198,7 @@ public class Subscription {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, serviceId, price, currency, trialPeriodDays, billingCycle,
+    return Objects.hash(id, service, price, currency, trialPeriodDays, billingCycle,
         notificationDaysBefore, status, notes, startDate, cancelledDate);
   }
 
@@ -206,14 +206,14 @@ public class Subscription {
   public String toString() {
     return "Subscription{" +
         "id=" + id +
-        ", serviceId=" + serviceId +
-        ", price='" + price + '\'' +
-        ", currency='" + currency + '\'' +
+        ", service=" + service +
+        ", price='" + price +
+        ", currency='" + currency +
         ", trialPeriodDays=" + trialPeriodDays +
         ", billingCycle=" + billingCycle +
         ", notificationDaysBefore=" + notificationDaysBefore +
         ", status=" + status +
-        ", notes='" + notes + '\'' +
+        ", notes='" + notes +
         ", startDate=" + startDate +
         ", cancelledDate=" + cancelledDate +
         ", createdAt=" + createdAt +
