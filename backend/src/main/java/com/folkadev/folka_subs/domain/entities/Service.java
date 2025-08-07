@@ -1,6 +1,7 @@
 package com.folkadev.folka_subs.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,15 +17,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "services")
 public class Service {
 
   @Id
   @GeneratedValue
   @Column(name = "id", nullable = false, updatable = false)
-  private UUID id;
+  @Builder.Default
+  private UUID id = null;
 
   @Column(name = "name", nullable = false)
   private String name;
@@ -33,71 +45,18 @@ public class Service {
   private String displayName;
 
   @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Subscription> subscriptions;
+  @Builder.Default
+  private List<Subscription> subscriptions = new ArrayList<>();
 
   @CreationTimestamp
   @Column(name = "created_at")
-  private LocalDateTime createdAt;
+  @Builder.Default
+  private LocalDateTime createdAt = null;
 
   @UpdateTimestamp
   @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  public Service() {
-  }
-
-  public Service(String name, String displayName) {
-    this.name = name;
-    this.displayName = displayName;
-  }
-
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
-  public List<Subscription> getSubscriptions() {
-    return subscriptions;
-  }
-
-  public void setSubscriptions(List<Subscription> subscriptions) {
-    this.subscriptions = subscriptions;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
+  @Builder.Default
+  private LocalDateTime updatedAt = null;
 
   @Override
   public boolean equals(Object o) {
