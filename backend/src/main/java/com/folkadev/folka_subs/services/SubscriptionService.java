@@ -7,11 +7,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SubscriptionService {
-  Optional<List<SubscriptionDto>> getAllSubscriptions();
+  List<SubscriptionDto> getAllSubscriptions();
 
-  Optional<List<SubscriptionDto>> getSubscriptionsByServiceId(UUID serviceId);
+  List<SubscriptionDto> getSubscriptionsByServiceId(UUID serviceId);
 
-  SubscriptionDto getSubscription(UUID subscriptionId);
+  Optional<SubscriptionDto> getSubscription(UUID subscriptionId);
 
   SubscriptionDto createSubscription(SubscriptionDto subscriptionDto);
 

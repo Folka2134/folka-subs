@@ -40,9 +40,10 @@ public class SubscriptionController {
     return subscriptionService.getSubscriptionsByServiceId(serviceId);
   }
 
-  @GetMapping(path = "subscription_id")
-  public SubscriptionDto getSubscription(@PathVariable("subscription_id") UUID subscriptionId) {
-    return subscriptionService.getSubscription(subscriptionId);
+  @GetMapping(path = "/{subscription_id}")
+  public ResponseEntity<SubscriptionDto> getSubscription(@PathVariable("subscription_id") UUID subscriptionId) {
+    return subscriptionService.getSubscription(subscriptionId).map(subscription -> ResponseEntity.ok(subscription))
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping
