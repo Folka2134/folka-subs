@@ -1,6 +1,7 @@
 package com.folkadev.folka_subs.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class ServiceServiceImpl implements ServiceService {
   }
 
   @Override
-  public ServiceDto getService(UUID serviceId) {
+  public Optional<ServiceDto> getService(UUID serviceId) {
     // TODO: Implement getService
     return null;
   }

@@ -35,11 +35,12 @@ public class ServiceController {
   }
 
   @GetMapping(path = "/{service_id}")
-  public ServiceDto getService(@RequestParam("service_id") UUID serviceId) {
-    return serviceService.getService(serviceId);
+  public ResponseEntity<ServiceDto> getService(@RequestParam("service_id") UUID serviceId) {
+    return serviceService.getService(serviceId).map(subscription -> ResponseEntity.ok(subscription))
+        .orElse(ResponseEntity.notFound().build());
   }
 
-  @PostMapping()
+  @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<ServiceDto> createService(@RequestBody ServiceDto serviceDto) {
 
