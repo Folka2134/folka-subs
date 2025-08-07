@@ -21,10 +21,11 @@ public class SubscriptionMapperImpl implements SubscriptionMapper {
   public Subscription fromDto(SubscriptionDto subscriptionDto) {
     Service service = serviceRepository.findById(subscriptionDto.serviceId())
         .orElseThrow(() -> new RuntimeException("Service not found"));
-    return new Subscription(service, subscriptionDto.price(), subscriptionDto.currency(),
-        subscriptionDto.trialPeriodDays(), subscriptionDto.billingCycle(), subscriptionDto.notificationDaysBefore(),
-        subscriptionDto.status(), subscriptionDto.notes(), subscriptionDto.startDate(),
-        subscriptionDto.cancelledDate());
+    return Subscription.builder().service(service).price(subscriptionDto.price()).currency(subscriptionDto.currency())
+        .trialPeriodDays(subscriptionDto.trialPeriodDays()).billingCycle(subscriptionDto.billingCycle())
+        .notificationDaysBefore(subscriptionDto.notificationDaysBefore()).status(subscriptionDto.status())
+        .notes(subscriptionDto.notes()).startDate(subscriptionDto.startDate())
+        .cancelledDate(subscriptionDto.cancelledDate()).build();
   }
 
   @Override

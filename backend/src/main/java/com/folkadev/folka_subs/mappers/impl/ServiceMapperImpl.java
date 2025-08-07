@@ -10,7 +10,7 @@ import com.folkadev.folka_subs.mappers.ServiceMapper;
 public class ServiceMapperImpl implements ServiceMapper {
   @Override
   public Service fromDto(ServiceDto serviceDto) {
-    return new Service(serviceDto.name(), serviceDto.displayName());
+    return Service.builder().name(serviceDto.name()).displayName(serviceDto.displayName()).build();
   }
 
   @Override
