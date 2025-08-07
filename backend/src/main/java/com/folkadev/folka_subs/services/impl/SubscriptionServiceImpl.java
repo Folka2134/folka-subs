@@ -13,19 +13,19 @@ import com.folkadev.folka_subs.services.SubscriptionService;
 public class SubscriptionServiceImpl implements SubscriptionService {
 
   @Override
-  public Optional<List<SubscriptionDto>> getAllSubscriptions() {
+  public List<SubscriptionDto> getAllSubscriptions() {
     // TODO: Implement getAllSubscriptions
-    return Optional.empty();
+    return null;
   }
 
   @Override
-  public Optional<List<SubscriptionDto>> getSubscriptionsByServiceId(UUID serviceId) {
+  public List<SubscriptionDto> getSubscriptionsByServiceId(UUID serviceId) {
     // TODO: Implement getSubscriptionsByServiceId
-    return Optional.empty();
+    return null;
   }
 
   @Override
-  public SubscriptionDto getSubscription(UUID subscriptionId) {
+  public Optional<SubscriptionDto> getSubscription(UUID subscriptionId) {
     // TODO: Implement getSubscription
     return null;
   }

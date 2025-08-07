@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,14 +29,12 @@ public class SubscriptionController {
 
   @GetMapping
   public List<SubscriptionDto> getAllSubscriptions() {
-    // TODO: Fix return
     return subscriptionService.getAllSubscriptions();
   }
 
-  @GetMapping(path = "service_id")
+  @GetMapping(path = "/service/{service_id}")
   public List<SubscriptionDto> getSubscriptionsByServiceId(@PathVariable("service_id") UUID serviceId) {
-    // TODO: Fix return
-    return subscriptionService.getSubscriptionsByServiceId(serviceId);
+    return null;
   }
 
   @GetMapping(path = "/{subscription_id}")
@@ -47,20 +44,19 @@ public class SubscriptionController {
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<SubscriptionDto> createSubscription(SubscriptionDto subscriptionDto) {
+  public ResponseEntity<SubscriptionDto> createSubscription(@RequestBody SubscriptionDto subscriptionDto) {
 
     SubscriptionDto createdSubscription = subscriptionService.createSubscription(subscriptionDto);
-    return new ResponseEntity<>(createdSubscription, HttpStatus.CREATED);
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdSubscription);
   }
 
-  @PutMapping(path = "subscription_id")
+  @PutMapping(path = "/{subscription_id}")
   public SubscriptionDto updateSubscription(@PathVariable("subscription_id") UUID subscriptionId,
       @RequestBody SubscriptionDto subscriptionDto) {
     return subscriptionService.updateSubscription(subscriptionId, subscriptionDto);
   }
 
-  @DeleteMapping(path = "subscription_id")
+  @DeleteMapping(path = "/{subscription_id}")
   public void deleteSubscription(@PathVariable("subscription_id") UUID subscriptionId) {
     subscriptionService.deleteSubscription(subscriptionId);
   }
