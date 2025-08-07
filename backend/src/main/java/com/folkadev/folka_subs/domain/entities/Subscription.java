@@ -16,15 +16,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "subscriptions")
 public class Subscription {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "id", nullable = false, updatable = false)
-  private UUID id;
+  @Builder.Default
+  private UUID id = null;
 
   @ManyToOne
   @JoinColumn(name = "service_id", nullable = false)
@@ -59,122 +70,13 @@ public class Subscription {
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+  @Builder.Default
+  private LocalDateTime createdAt = null;
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
-
-  public Subscription() {
-  }
-
-  public Subscription(Service service, int price, String currency, int trialPeriodDays,
-      BillingCycle billingCycle, List<Integer> notificationDaysBefore, Status status,
-      String notes, LocalDateTime startDate, LocalDateTime cancelledDate) {
-    this.service = service;
-    this.price = price;
-    this.currency = currency;
-    this.trialPeriodDays = trialPeriodDays;
-    this.billingCycle = billingCycle;
-    this.notificationDaysBefore = notificationDaysBefore;
-    this.status = status;
-    this.notes = notes;
-    this.startDate = startDate;
-    this.cancelledDate = cancelledDate;
-  }
-
-  // Getters and Setters
-  public UUID getId() {
-    return id;
-  }
-
-  public Service getService() {
-    return service;
-  }
-
-  public void setService(Service service) {
-    this.service = service;
-  }
-
-  public int getPrice() {
-    return price;
-  }
-
-  public void setPrice(int price) {
-    this.price = price;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public void setCurrency(String currency) {
-    this.currency = currency;
-  }
-
-  public int getTrialPeriodDays() {
-    return trialPeriodDays;
-  }
-
-  public void setTrialPeriodDays(int trialPeriodDays) {
-    this.trialPeriodDays = trialPeriodDays;
-  }
-
-  public BillingCycle getBillingCycle() {
-    return billingCycle;
-  }
-
-  public void setBillingCycle(BillingCycle billingCycle) {
-    this.billingCycle = billingCycle;
-  }
-
-  public List<Integer> getNotificationDaysBefore() {
-    return notificationDaysBefore;
-  }
-
-  public void setNotificationDaysBefore(List<Integer> notificationDaysBefore) {
-    this.notificationDaysBefore = notificationDaysBefore;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public void setStatus(Status status) {
-    this.status = status;
-  }
-
-  public String getNotes() {
-    return notes;
-  }
-
-  public void setNotes(String notes) {
-    this.notes = notes;
-  }
-
-  public LocalDateTime getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(LocalDateTime startDate) {
-    this.startDate = startDate;
-  }
-
-  public LocalDateTime getCancelledDate() {
-    return cancelledDate;
-  }
-
-  public void setCancelledDate(LocalDateTime cancelledDate) {
-    this.cancelledDate = cancelledDate;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
+  @Builder.Default
+  private LocalDateTime updatedAt = null;
 
   @Override
   public boolean equals(Object o) {
