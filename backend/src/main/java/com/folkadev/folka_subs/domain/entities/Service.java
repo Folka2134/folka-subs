@@ -49,12 +49,12 @@ public class Service {
   private List<Subscription> subscriptions = new ArrayList<>();
 
   @CreationTimestamp
-  @Column(name = "created_at")
+  @Column(name = "created_at", nullable = false)
   @Builder.Default
   private LocalDateTime createdAt = null;
 
   @UpdateTimestamp
-  @Column(name = "updated_at")
+  @Column(name = "updated_at", nullable = false)
   @Builder.Default
   private LocalDateTime updatedAt = null;
 
