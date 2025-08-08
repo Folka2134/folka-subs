@@ -9,13 +9,19 @@ import com.folkadev.folka_subs.mappers.ServiceMapper;
 @Component
 public class ServiceMapperImpl implements ServiceMapper {
   @Override
-  public Service fromDto(ServiceDto serviceDto) {
-    return Service.builder().name(serviceDto.name()).displayName(serviceDto.displayName()).build();
+  public ServiceDto toDto(Service service) {
+    if (service == null) {
+      return null;
+    }
     return new ServiceDto(service.getId(), service.getName(), service.getDisplayName(), service.getSubscriptions());
   }
 
   @Override
-  public ServiceDto toDto(Service service) {
-    return new ServiceDto(service.getId(), service.getName(), service.getDisplayName());
+  public Service fromDto(ServiceDto serviceDto) {
+    if (serviceDto == null) {
+      return null;
+    }
+    return Service.builder().name(serviceDto.name()).displayName(serviceDto.displayName()).build();
   }
+
 }
