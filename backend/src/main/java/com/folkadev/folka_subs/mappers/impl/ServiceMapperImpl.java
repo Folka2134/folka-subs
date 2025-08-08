@@ -11,6 +11,7 @@ public class ServiceMapperImpl implements ServiceMapper {
   @Override
   public Service fromDto(ServiceDto serviceDto) {
     return Service.builder().name(serviceDto.name()).displayName(serviceDto.displayName()).build();
+    return new ServiceDto(service.getId(), service.getName(), service.getDisplayName(), service.getSubscriptions());
   }
 
   @Override
