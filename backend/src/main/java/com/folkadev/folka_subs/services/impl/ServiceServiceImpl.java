@@ -7,20 +7,29 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
+import com.folkadev.folka_subs.mappers.ServiceMapper;
+import com.folkadev.folka_subs.repositories.ServiceRepository;
 import com.folkadev.folka_subs.services.ServiceService;
 
 @Service
 public class ServiceServiceImpl implements ServiceService {
+
+  private final ServiceRepository serviceRepository;
+  private final ServiceMapper serviceMapper;
+
+  public ServiceServiceImpl(ServiceRepository serviceRepository, ServiceMapper serviceMapper) {
+    this.serviceRepository = serviceRepository;
+    this.serviceMapper = serviceMapper;
+  }
+
   @Override
   public List<ServiceDto> getServices() {
-    // TODO: Implement getServices
-    return null;
+    return serviceRepository.findAll().stream().map(serviceMapper::toDto).toList();
   }
 
   @Override
   public Optional<ServiceDto> getService(UUID serviceId) {
-    // TODO: Implement getService
-    return null;
+    return serviceRepository.findById(serviceId).map(serviceMapper::toDto);
   }
 
   @Override
