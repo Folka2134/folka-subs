@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/service")
+@RequestMapping(path = "/services")
 public class ServiceController {
 
   private final ServiceService serviceService;
