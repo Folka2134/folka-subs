@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
+import com.folkadev.folka_subs.domain.entities.Service;
+import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
 import com.folkadev.folka_subs.mappers.ServiceMapper;
 import com.folkadev.folka_subs.repositories.ServiceRepository;
 import com.folkadev.folka_subs.services.ServiceService;
 
-@Service
+@org.springframework.stereotype.Service
 public class ServiceServiceImpl implements ServiceService {
 
   private final ServiceRepository serviceRepository;
@@ -34,13 +34,24 @@ public class ServiceServiceImpl implements ServiceService {
 
   @Override
   public ServiceDto createService(ServiceDto serviceDto) {
-    // TODO: Implement createService
-    return null;
+    if (serviceDto.name() == null || serviceDto.name().isEmpty()) {
+      throw new IllegalArgumentException("Service name is required");
+    }
+
+    if (serviceDto.displayName() == null || serviceDto.displayName().isEmpty()) {
+      throw new IllegalArgumentException("Service display name is required");
+    }
+
+    if (serviceRepository.findByName(serviceDto.name()).isPresent()) {
+      throw new ResourceAlreadyExistsException("Service already exists");
+    }
+
+    Service newService = serviceRepository.save(serviceMapper.fromDto(serviceDto));
+    return serviceMapper.toDto(newService);
   }
 
   @Override
   public ServiceDto updateService(UUID serviceId, ServiceDto serviceDto) {
-    // TODO: Implement updateService
     return null;
   }
 
