@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
 import com.folkadev.folka_subs.domain.entities.Service;
+import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
 import com.folkadev.folka_subs.mappers.ServiceMapper;
 import com.folkadev.folka_subs.repositories.ServiceRepository;
 import com.folkadev.folka_subs.services.impl.ServiceServiceImpl;
@@ -128,6 +129,72 @@ public class ServiceServiceTest {
 
       assertThrows(IllegalArgumentException.class, () -> {
         serviceService.getService(null);
+      });
+    }
+  }
+
+  @Nested
+  @DisplayName("Create service should create a service or throw an exception")
+  class CreateService {
+
+    @Test
+    @DisplayName("Should create a new service from a service Dto and return it")
+    void createNewServiceAndReturnServiceDtoWhenPassedAValidServiceDto() {
+      UUID serviceDtoId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceDtoId, "netflix", "Netflix", new ArrayList<>());
+      Service newService = new Service(serviceDtoId, "netflix", "Netflix", new ArrayList<>(), LocalDateTime.now(),
+          LocalDateTime.now());
+
+      // when
+      when(serviceRepository.findByName("netflix")).thenReturn(Optional.empty());
+      when(serviceMapper.fromDto(serviceDto)).thenReturn(newService);
+      when(serviceRepository.save(newService)).thenReturn(newService);
+      when(serviceMapper.toDto(newService)).thenReturn(serviceDto);
+
+      // assert
+      ServiceDto result = serviceService.createService(serviceDto);
+      assertNotNull(result);
+      assertEquals(serviceDtoId, result.id());
+      assertEquals("netflix", result.name());
+      assertEquals("Netflix", result.displayName());
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceAlreadyExistsException if service already exists")
+    void throwResourceAlreadyExistsExceptionWhenPassedDuplicateService() {
+      UUID serviceDtoId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceDtoId, "netflix", "Netflix", new ArrayList<>());
+      Service existingService = new Service(UUID.randomUUID(), "netflix", "Netflix", new ArrayList<>(),
+          LocalDateTime.now(), LocalDateTime.now());
+
+      // when
+      when(serviceRepository.findByName("netflix")).thenReturn(Optional.of(existingService));
+
+      // assert
+      assertThrows(ResourceAlreadyExistsException.class, () -> {
+        serviceService.createService(serviceDto);
+      });
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalArgumentException if passed invalid arguments")
+    void throwIllegalArgumentExceptionWhenPassedInvalidArguments() {
+      ServiceDto serviceDtoWithNullName = new ServiceDto(UUID.randomUUID(), null, "Display Name", new ArrayList<>());
+      ServiceDto serviceDtoWithEmptyName = new ServiceDto(UUID.randomUUID(), "", "Display Name", new ArrayList<>());
+      ServiceDto serviceDtoWithNullDisplayName = new ServiceDto(UUID.randomUUID(), "Netflix", null, new ArrayList<>());
+      ServiceDto serviceDtoWithEmptyDisplayName = new ServiceDto(UUID.randomUUID(), "Netflix", "", new ArrayList<>());
+
+      assertThrows(IllegalArgumentException.class, () -> {
+        serviceService.createService(serviceDtoWithNullName);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        serviceService.createService(serviceDtoWithEmptyName);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        serviceService.createService(serviceDtoWithNullDisplayName);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        serviceService.createService(serviceDtoWithEmptyDisplayName);
       });
     }
   }
