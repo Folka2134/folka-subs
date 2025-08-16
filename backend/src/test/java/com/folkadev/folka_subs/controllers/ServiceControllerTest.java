@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -57,23 +58,35 @@ public class ServiceControllerTest {
     }
   }
 
-  // TODO: Implement tests
   @Nested
   @DisplayName("GET /services/{service_id}")
   class GetService {
     @Test
     void shouldReturnSpecificServiceWhenItExists() throws Exception {
+      UUID serviceId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceId, "spotify", "Spotify", new ArrayList<>());
 
+      when(serviceService.getService(serviceId)).thenReturn(Optional.of(serviceDto));
+
+      mockMvc.perform(get("/services/{service_id}", serviceId)).andExpect(status().isOk())
+          .andExpect(jsonPath("$.id").value(serviceDto.id().toString()))
+          .andExpect(jsonPath("$.name").value(serviceDto.name().toString()))
+          .andExpect(jsonPath("$.displayName").value(serviceDto.displayName().toString()));
     }
 
     @Test
     void shouldReturnNoFoundFoundWhenServicesDoesNotExist() throws Exception {
+      UUID serviceId = UUID.randomUUID();
 
+      when(serviceService.getService(serviceId)).thenReturn(Optional.empty());
+
+      mockMvc.perform(get("/services/{service_id}", serviceId)).andExpect(status().isNotFound());
     }
 
     @Test
-    void shouldReturnErrorWhenInvalidIdIsPassed() {
-
+    void shouldReturnErrorWhenInvalidIdIsPassed() throws Exception {
+      mockMvc.perform(get("/services/{service_id}", "not-a-uuid"))
+          .andExpect(status().isBadRequest());
     }
   }
 
