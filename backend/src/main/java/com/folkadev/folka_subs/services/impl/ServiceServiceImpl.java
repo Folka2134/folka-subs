@@ -75,6 +75,9 @@ public class ServiceServiceImpl implements ServiceService {
 
   @Override
   public void deleteService(UUID serviceId) {
-    // TODO: Implement deleteService
+    Service serviceToDelete = serviceRepository.findById(serviceId).orElseThrow(() -> {
+      throw new ResourceNotFoundException("Service doesn't exist");
+    });
+    serviceRepository.delete(serviceToDelete);
   }
 }
