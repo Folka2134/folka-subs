@@ -2,6 +2,7 @@ package com.folkadev.folka_subs.controllers;
 
 import com.folkadev.folka_subs.domain.dto.ErrorResponse;
 import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
+import com.folkadev.folka_subs.exceptions.ResourceNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,13 @@ public class GlobalExceptionHandler {
         ex.getMessage(),
         request.getDescription(false));
     return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler({ ResourceNotFoundException.class })
+  public ResponseEntity<ErrorResponse> handleResourceDoesNotExist(ResourceNotFoundException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(),
+        request.getDescription(false));
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
 }
