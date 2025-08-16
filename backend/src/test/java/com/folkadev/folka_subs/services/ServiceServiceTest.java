@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -199,6 +201,7 @@ public class ServiceServiceTest {
       });
     }
   }
+
   @Nested
   @DisplayName("Update service should update a service or throw an exception")
   class UpdateService {
@@ -256,5 +259,36 @@ public class ServiceServiceTest {
       });
     }
   }
+
   @Nested
+  @DisplayName("Delete service should delete a service or throw and exception")
+  class DeleteService {
+
+    @Test
+    @DisplayName("Should delete a service")
+    void shouldDeleteServiceWhenProvidedAnId() {
+      UUID serviceId = UUID.randomUUID();
+
+      Service service = new Service(serviceId, "spotify", "Spotify", new ArrayList<>(), LocalDateTime.now(),
+          LocalDateTime.now());
+
+      when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+      serviceService.deleteService(serviceId);
+
+      verify(serviceRepository, times(1)).delete(service);
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFound exception when service doesn't exist")
+    void throwResourceNotFoundExceptionWhenServiceDoesNotExist() {
+      UUID serviceId = UUID.randomUUID();
+
+      when(serviceRepository.findById(serviceId)).thenReturn(Optional.empty());
+
+      assertThrows(ResourceNotFoundException.class, () -> {
+        serviceService.deleteService(serviceId);
+      });
+    }
+  }
 }
