@@ -3,6 +3,7 @@ package com.folkadev.folka_subs.controllers;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,10 +17,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
+import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
 import com.folkadev.folka_subs.services.ServiceService;
 
 @WebMvcTest(ServiceController.class)
@@ -90,28 +94,46 @@ public class ServiceControllerTest {
     }
   }
 
-  // TODO: Implement tests
   @Nested
   @DisplayName("POST /services")
   class CreateService {
     @Test
     void shouldReturn201WhenServiceIsCreated() throws Exception {
+      UUID serviceId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceId, "spotify", "Spotify", new ArrayList<>());
 
+      when(serviceService.createService(serviceDto)).thenReturn(serviceDto);
+
+      mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
+          .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isCreated());
     }
 
     @Test
     void shouldReturn400WhenInvalidFieldsArePassed() throws Exception {
+      ServiceDto serviceDto = new ServiceDto(null, "", "Spotify", new ArrayList<>());
 
+      mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
+          .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldReturn400WhenRequestBodyIsMissing() throws Exception {
-
+      mockMvc.perform(
+          post("/services").contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldReturn409WhenServiceAlreadyExists() throws Exception {
+      UUID serviceId = UUID.randomUUID();
 
+      ServiceDto serviceDto = new ServiceDto(serviceId, "spotify", "Spotify", new ArrayList<>());
+
+      when(serviceService.createService(serviceDto))
+          .thenThrow(new ResourceAlreadyExistsException("Service with name 'spotify' already exists"));
+
+      mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
+          .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isConflict());
     }
   }
 
