@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
 import com.folkadev.folka_subs.domain.entities.Service;
 import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
+import com.folkadev.folka_subs.exceptions.ResourceNotFoundException;
 import com.folkadev.folka_subs.mappers.ServiceMapper;
 import com.folkadev.folka_subs.repositories.ServiceRepository;
 import com.folkadev.folka_subs.services.ServiceService;
@@ -52,7 +53,24 @@ public class ServiceServiceImpl implements ServiceService {
 
   @Override
   public ServiceDto updateService(UUID serviceId, ServiceDto serviceDto) {
-    return null;
+    Service serviceToUpdate = serviceRepository.findById(serviceId).orElseThrow(() -> {
+      throw new ResourceNotFoundException("Service doesn't exist");
+    });
+
+    if (serviceDto.name() == serviceToUpdate.getName() && serviceDto.displayName() == serviceToUpdate.getDisplayName()
+        || serviceDto.name() == null
+        || serviceDto.name().isBlank()
+        || serviceDto.displayName() == null
+        || serviceDto.displayName().isBlank()) {
+      throw new IllegalArgumentException("No new values detected");
+    }
+
+    serviceToUpdate.setName(serviceDto.name());
+    serviceToUpdate.setDisplayName(serviceDto.displayName());
+
+    Service updatedService = serviceRepository.save(serviceToUpdate);
+
+    return serviceMapper.toDto(updatedService);
   }
 
   @Override
