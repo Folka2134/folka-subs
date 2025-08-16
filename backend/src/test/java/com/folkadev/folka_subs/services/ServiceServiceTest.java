@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
 import com.folkadev.folka_subs.domain.entities.Service;
 import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
+import com.folkadev.folka_subs.exceptions.ResourceNotFoundException;
 import com.folkadev.folka_subs.mappers.ServiceMapper;
 import com.folkadev.folka_subs.repositories.ServiceRepository;
 import com.folkadev.folka_subs.services.impl.ServiceServiceImpl;
@@ -198,4 +199,62 @@ public class ServiceServiceTest {
       });
     }
   }
+  @Nested
+  @DisplayName("Update service should update a service or throw an exception")
+  class UpdateService {
+
+    @Test
+    @DisplayName("Should update an existing service and return the updated service DTO")
+    void updateExistingServiceAndReturnUpdatedServiceDto() {
+      UUID serviceId = UUID.randomUUID();
+
+      ServiceDto serviceDto = new ServiceDto(serviceId, "new spotify name", "new Spotify display", new ArrayList<>());
+      Service existingService = new Service(serviceId, "spotify", "Spotify", new ArrayList<>(), LocalDateTime.now(),
+          LocalDateTime.now());
+      Service expectedUpdatedService = new Service(serviceId, serviceDto.name(), serviceDto.displayName(),
+          new ArrayList<>(),
+          LocalDateTime.now(), LocalDateTime.now());
+      ServiceDto expectedUpdatedServiceDto = new ServiceDto(serviceId, serviceDto.name(), serviceDto.displayName(),
+          new ArrayList<>());
+
+      when(serviceRepository.findById(serviceDto.id())).thenReturn(Optional.of(existingService));
+      when(serviceRepository.save(expectedUpdatedService)).thenReturn(expectedUpdatedService);
+      when(serviceMapper.toDto(expectedUpdatedService)).thenReturn(expectedUpdatedServiceDto);
+
+      ServiceDto result = serviceService.updateService(serviceId, serviceDto);
+      assertNotNull(result);
+      assertEquals(expectedUpdatedServiceDto, result);
+    }
+
+    @Test
+    @DisplayName("Throw ResourceNotFound exception when service doesn't exist")
+    void throwResourceNotFoundExceptionWhenServiceDoesNotExist() {
+      UUID serviceId = UUID.randomUUID();
+
+      ServiceDto serviceDto = new ServiceDto(serviceId, "youtube", "Youtube", new ArrayList<>());
+
+      when(serviceRepository.findById(serviceId)).thenReturn(Optional.empty());
+
+      assertThrows(ResourceNotFoundException.class, () -> {
+        serviceService.updateService(serviceId, serviceDto);
+      });
+    }
+
+    @Test
+    @DisplayName("Throw IllegalArgumentException when no new value is provided")
+    void throwIllegalArgumentExceptionWhenPassedNoNewValue() {
+      UUID serviceId = UUID.randomUUID();
+
+      ServiceDto serviceDto = new ServiceDto(serviceId, "spotify", "Spotify", new ArrayList<>());
+      Service service = new Service(serviceId, "spotify", "Spotify", new ArrayList<>(), LocalDateTime.now(),
+          LocalDateTime.now());
+
+      when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+      assertThrows(IllegalArgumentException.class, () -> {
+        serviceService.updateService(serviceId, serviceDto);
+      });
+    }
+  }
+  @Nested
 }
