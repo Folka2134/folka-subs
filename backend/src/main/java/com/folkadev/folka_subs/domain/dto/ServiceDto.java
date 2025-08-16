@@ -5,5 +5,8 @@ import java.util.UUID;
 
 import com.folkadev.folka_subs.domain.entities.Subscription;
 
-public record ServiceDto(UUID id, String name, String displayName, List<Subscription> subscriptions) {
+import jakarta.validation.constraints.NotBlank;
+
+public record ServiceDto(UUID id, @NotBlank String name, @NotBlank String displayName,
+    List<Subscription> subscriptions) {
 }

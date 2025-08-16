@@ -3,6 +3,8 @@ package com.folkadev.folka_subs.controllers;
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
 import com.folkadev.folka_subs.services.ServiceService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -41,7 +43,7 @@ public class ServiceController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<ServiceDto> createService(@RequestBody ServiceDto serviceDto) {
+  public ResponseEntity<ServiceDto> createService(@Valid @RequestBody ServiceDto serviceDto) {
 
     ServiceDto createdServiceDto = serviceService.createService(serviceDto);
     return new ResponseEntity<>(createdServiceDto, HttpStatus.CREATED);
