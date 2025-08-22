@@ -183,7 +183,8 @@ public class ServiceControllerTest {
     @Test
     void shouldReturn400WhenRequestBodyIsMissing() throws Exception {
       UUID serviceId = UUID.randomUUID();
-      mockMvc.perform(put("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON));
+      mockMvc.perform(put("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isBadRequest());
     }
   }
 
