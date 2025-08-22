@@ -50,8 +50,10 @@ public class ServiceController {
   }
 
   @PutMapping(path = "/{service_id}")
-  public ServiceDto updateService(@PathVariable("service_id") UUID serviceId, @RequestBody ServiceDto serviceDto) {
-    return serviceService.updateService(serviceId, serviceDto);
+  public ResponseEntity<ServiceDto> updateService(@PathVariable("service_id") UUID serviceId,
+      @Valid @RequestBody ServiceDto serviceDto) {
+    ServiceDto updatedService = serviceService.updateService(serviceId, serviceDto);
+    return new ResponseEntity<>(updatedService, HttpStatus.OK);
   }
 
   @DeleteMapping(path = "/{service_id}")
