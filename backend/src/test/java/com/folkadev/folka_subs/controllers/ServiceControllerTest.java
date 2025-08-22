@@ -1,7 +1,9 @@
 package com.folkadev.folka_subs.controllers;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -154,7 +156,6 @@ public class ServiceControllerTest {
 
       mockMvc.perform(put("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON)
           .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isOk());
-
     }
 
     @Test
@@ -188,19 +189,26 @@ public class ServiceControllerTest {
     }
   }
 
-  // TODO: Implement tests
   @Nested
   @DisplayName("DELETE /services/{service_id}")
   class DeleteService {
 
     @Test
     void shouldreturn204WhenServiceIsDeleted() throws Exception {
+      UUID serviceId = UUID.randomUUID();
 
+      mockMvc.perform(delete("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().is2xxSuccessful());
     }
 
     @Test
-    void shouldReturn400WhenInvalidFieldsArePassed() throws Exception {
+    void shouldReturn404WhenServiceNotFOund() throws Exception {
+      UUID serviceId = UUID.randomUUID();
 
+      doThrow(new ResourceNotFoundException("Service doesn't exist")).when(serviceService).deleteService(serviceId);
+
+      mockMvc.perform(delete("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isNotFound());
     }
   }
 }
