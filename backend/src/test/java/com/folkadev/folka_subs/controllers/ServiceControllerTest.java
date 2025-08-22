@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.folkadev.folka_subs.domain.dto.ServiceDto;
 import com.folkadev.folka_subs.exceptions.ResourceAlreadyExistsException;
+import com.folkadev.folka_subs.exceptions.ResourceNotFoundException;
 import com.folkadev.folka_subs.services.ServiceService;
 
 @WebMvcTest(ServiceController.class)
@@ -137,29 +139,51 @@ public class ServiceControllerTest {
     }
   }
 
-  // TODO: Implement tests
   @Nested
   @DisplayName("PUT /services/{service_id}")
   class UpdateService {
 
     @Test
-    void shouldReturn204WhenPassedValidFields() throws Exception {
+    void shouldReturn200WhenPassedValidFields() throws Exception {
+      UUID serviceId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceId, "spotify", "Spotify", new ArrayList<>());
+      ServiceDto updatedServiceDto = new ServiceDto(serviceId, "spotify", "Updated Spotify display name",
+          new ArrayList<>());
+
+      when(serviceService.updateService(serviceId, serviceDto)).thenReturn(updatedServiceDto);
+
+      mockMvc.perform(put("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON)
+          .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isOk());
 
     }
 
     @Test
     void shouldReturn404WhenServiceIsNotFound() throws Exception {
+      UUID serviceId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceId, "spotify", "Spotify", new ArrayList<>());
 
+      when(serviceService.updateService(serviceId, serviceDto))
+          .thenThrow(new ResourceNotFoundException("Service doesn't exist"));
+
+      mockMvc.perform(put("/services/{service_id}",
+          serviceId).contentType(MediaType.APPLICATION_JSON)
+          .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isNotFound());
     }
 
     @Test
     void shouldReturn400WhenInvalidFieldsArePassed() throws Exception {
+      UUID serviceId = UUID.randomUUID();
+      ServiceDto serviceDto = new ServiceDto(serviceId, "", "Updated Display name", new ArrayList<>());
+
+      mockMvc.perform(put("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON)
+          .content(new ObjectMapper().writeValueAsString(serviceDto))).andExpect(status().isBadRequest());
 
     }
 
     @Test
     void shouldReturn400WhenRequestBodyIsMissing() throws Exception {
-
+      UUID serviceId = UUID.randomUUID();
+      mockMvc.perform(put("/services/{service_id}", serviceId).contentType(MediaType.APPLICATION_JSON));
     }
   }
 
